@@ -7,7 +7,9 @@
     "dev": "next dev",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "docker:up": "docker compose -f infra/compose.yaml up -d",
+    "docker:down": "docker compose -f infra/compose.yaml down"
   },
   "author": "Daniela Caus",
   "license": "MIT",
