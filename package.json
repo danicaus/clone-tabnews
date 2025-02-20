@@ -4,11 +4,12 @@
   "description": "Clone tabnews, desenvolvido durante o curso.dev do Filipe Deschamps",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run docker:up && next dev",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "test:watch": "jest --watchAll",
     "docker:up": "docker compose -f infra/compose.yaml up -d",
+    "docker:stop": "docker compose -f infra/compose.yaml stop",
     "docker:down": "docker compose -f infra/compose.yaml down"
   },
   "author": "Daniela Caus",
