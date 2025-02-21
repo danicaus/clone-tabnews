@@ -1,7 +1,7 @@
 import { Client } from "pg";
 
 export async function query(queryObject) {
-  const client = new Client({
+  const connection = new Client({
     host: process.env.POSTGRES_HOST,
     port: process.env.POSTGRES_PORT,
     user: process.env.POSTGRES_USER,
@@ -9,10 +9,17 @@ export async function query(queryObject) {
     password: process.env.POSTGRES_PASSWORD,
   });
 
-  await client.connect();
-  const result = await client.query(queryObject);
+  let result;
 
-  await client.end();
+  try {
+    await connection.connect();
+
+    result = await connection.query(queryObject);
+  } catch (error) {
+    console.error("Erro no banco de dados", error);
+  } finally {
+    await connection.end();
+  }
 
   return result;
 }
