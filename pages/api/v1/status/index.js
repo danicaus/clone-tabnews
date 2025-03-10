@@ -1,5 +1,4 @@
 import { query } from "infra/database";
-import { client } from "infra/database";
 
 export default async function status(req, res) {
   const updatedAt = new Date().toISOString();
