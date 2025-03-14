@@ -1,0 +1,8 @@
+services:
+  test_database:
+    image: "postgres:16.0-alpine3.18"
+    env_file:
+      - ../.env.test
+    ports:
+      - 5431:5431
+    container_name: "test_database"
