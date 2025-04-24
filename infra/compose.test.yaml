@@ -5,4 +5,4 @@ services:
       - ../.env.test
     ports:
       - 5431:5431
-    container_name: "test_database"
+    container_name: "postgres-test"
