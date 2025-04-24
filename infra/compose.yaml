@@ -5,4 +5,4 @@ services:
       - ../.env.development
     ports:
       - 5432:5432
-    container_name: "dev_database"
+    container_name: "postgres-dev"
