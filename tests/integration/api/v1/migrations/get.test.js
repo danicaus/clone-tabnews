@@ -1,15 +1,17 @@
-import database from "infra/database";
+/**
+ * @jest-environment node
+ */
 
-async function cleanDatabase() {
-  await database.query("drop schema public cascade; create schema public;");
-}
+import orchestrator from "tests/integration/orchestrator.js";
+import database from "infra/database";
 
 describe("GET to /api/v1/migrations", () => {
   let response;
   let responseBody;
 
   beforeAll(async () => {
-    await cleanDatabase();
+    await orchestrator.waitForAllServices();
+    await database.query("drop schema public cascade; create schema public;");
   });
 
   beforeEach(async () => {
@@ -23,5 +25,9 @@ describe("GET to /api/v1/migrations", () => {
 
   test("SHOULD return an array", () => {
     expect(Array.isArray(responseBody)).toBe(true);
+  });
+
+  test("SHOULD return an array with at least one object", () => {
+    expect(responseBody.length).toBeGreaterThan(0);
   });
 });

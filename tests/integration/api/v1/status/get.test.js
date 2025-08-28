@@ -1,6 +1,15 @@
+/**
+ * @jest-environment node
+ */
+import orchestrator from "tests/integration/orchestrator.js";
+
 describe("GET to /api/v1/status", () => {
   let response;
   let responseBody;
+
+  beforeAll(async () => {
+    await orchestrator.waitForAllServices();
+  });
 
   beforeEach(async () => {
     response = await fetch("http://localhost:3000/api/v1/status");
