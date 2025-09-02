@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "npm run dev:setup && next dev",
     "dev:setup": "npm run dev:docker:up && cross-env NODE_ENV=development npm run wait-for-postgres && npm run migration:up",
-    "lint:check": "prettier --check .",
-    "lint:fix": "prettier --write .",
+    "lint:prettier:check": "prettier --check .",
+    "lint:prettier:fix": "prettier --write .",
     "test": "npm run test:docker:up && cross-env NODE_ENV=test concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\" && npm run test:docker:down",
     "test:watch": "jest --watchAll --runInBand",
     "test:docker:up": "docker compose -f infra/compose.test.yaml up -d",
