@@ -6,9 +6,6 @@
   "scripts": {
     "dev": "npm run dev:setup && next dev",
     "dev:setup": "npm run docker:up:dev && cross-env NODE_ENV=development npm run docker:wait:database && npm run migrations:up",
-    "lint:prettier:check": "prettier --check .",
-    "lint:prettier:fix": "prettier --write .",
-    "lint:eslint:check": "next lint --dir .",
     "test": "npm run docker:up:test && cross-env NODE_ENV=test concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\" && npm run docker:down:test",
     "test:watch": "jest --watchAll --runInBand",
     "docker:up:test": "docker compose -f infra/compose.test.yaml up -d",
@@ -20,6 +17,9 @@
     "docker:wait:database": "node infra/scripts/wait-for-postgres.js",
     "migrations:create": "node-pg-migrate -m infra/migrations create",
     "migrations:up": "node-pg-migrate -m infra/migrations --envPath .env.development up",
+    "lint:prettier:check": "prettier --check .",
+    "lint:prettier:fix": "prettier --write .",
+    "lint:eslint:check": "next lint --dir .",
     "prepare": "husky",
     "commit": "cz"
   },
