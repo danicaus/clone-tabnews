@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npm run dev:setup && next dev",
-    "dev:setup": "npm run docker:up:dev && cross-env NODE_ENV=development npm run docker:wait:database && npm run migration:up",
+    "dev:setup": "npm run docker:up:dev && cross-env NODE_ENV=development npm run docker:wait:database && npm run migrations:up",
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
     "lint:eslint:check": "next lint --dir .",
@@ -18,8 +18,8 @@
     "docker:stop:dev": "docker compose -f infra/compose.yaml stop",
     "docker:down:dev": "docker compose -f infra/compose.yaml down",
     "docker:wait:database": "node infra/scripts/wait-for-postgres.js",
-    "migration:create": "node-pg-migrate -m infra/migrations create",
-    "migration:up": "node-pg-migrate -m infra/migrations --envPath .env.development up",
+    "migrations:create": "node-pg-migrate -m infra/migrations create",
+    "migrations:up": "node-pg-migrate -m infra/migrations --envPath .env.development up",
     "prepare": "husky",
     "commit": "cz"
   },
