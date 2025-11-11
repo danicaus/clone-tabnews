@@ -24,7 +24,7 @@ describe("GET /api/v1/status", () => {
       const parsedUpdateAt = new Date(receivedUpdatedAt).toISOString();
       expect(receivedUpdatedAt).toBe(parsedUpdateAt);
 
-      const {database} = responseBody.dependencies;
+      const { database } = responseBody.dependencies;
       expect(database.version).toBe("16.0");
       expect(database.max_connections).toBe(100);
       expect(database.opened_connections).toBe(1);
