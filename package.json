@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "predev": "npm run docker:up:dev && cross-env NODE_ENV=development npm run docker:wait:database && npm run migrations:up",
-    "dev": "next dev",
+    "dev": "node infra/scripts/postdev-docker-stop.js",
     "pretest": "npm run docker:up:test",
     "test": "cross-env NODE_ENV=test concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\"",
     "posttest": "npm run docker:stop:test",
