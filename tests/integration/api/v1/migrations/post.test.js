@@ -12,7 +12,7 @@ describe("POST /api/v1/migrations", () => {
 
       beforeAll(async () => {
         await orchestrator.waitForAllServices();
-        await orchestrator.cleanDatabase()
+        await orchestrator.clearDatabase();
       });
 
       beforeEach(async () => {
