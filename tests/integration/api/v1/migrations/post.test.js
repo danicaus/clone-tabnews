@@ -3,7 +3,6 @@
  */
 
 import orchestrator from "tests/integration/orchestrator.js";
-import database from "infra/database";
 
 describe("POST /api/v1/migrations", () => {
   describe("Anonymous user", () => {
@@ -13,9 +12,7 @@ describe("POST /api/v1/migrations", () => {
 
       beforeAll(async () => {
         await orchestrator.waitForAllServices();
-        await database.query(
-          "drop schema public cascade; create schema public;",
-        );
+        await orchestrator.cleanDatabase()
       });
 
       beforeEach(async () => {
