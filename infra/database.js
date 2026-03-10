@@ -6,10 +6,11 @@ async function query(queryObject) {
     client = await getNewClient();
     return await client.query(queryObject);
   } catch (error) {
-    console.error("Erro no banco de dados", error);
+    console.log("\n Erro dentro do catch do database.js");
+    console.error(error);
     throw error;
   } finally {
-    await client.end();
+    await client?.end();
   }
 }
 
