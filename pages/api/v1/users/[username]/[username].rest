@@ -1,0 +1,5 @@
+@username = test_user
+@path = api/v1/users/{{username}}
+
+# Obtém os dados de um usuário
+GET {{host}}/{{path}}

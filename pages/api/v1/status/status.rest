@@ -1,0 +1,4 @@
+@path = api/v1/status
+
+# Obtém o status atual da api
+GET {{host}}/{{path}}

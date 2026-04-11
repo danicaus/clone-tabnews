@@ -11,7 +11,7 @@ async function migrationsHandler(dryRun) {
     dryRun,
     dir: resolve("infra", "migrations"),
     direction: "up",
-    verbose: true,
+    log: () => {},
     migrationsTable: "pgmigrations",
   };
 
@@ -37,7 +37,7 @@ async function runPendingMigrations() {
 
 const migrator = {
   listPendingMigrations,
-  runMigrations: runPendingMigrations,
+  runPendingMigrations,
 };
 
 export default migrator;

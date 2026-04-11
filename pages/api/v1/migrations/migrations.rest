@@ -1,0 +1,11 @@
+@path = api/v1/migrations
+
+
+# Obtém as migrations que ainda não rodaram
+GET {{host}}/{{path}}
+
+
+
+### 
+# Roda as migrations que ainda não foram rodadas
+POST {{host}}/{{path}}

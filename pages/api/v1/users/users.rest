@@ -1,0 +1,14 @@
+@path = api/v1/users
+@username = test_user
+@email = test_user@test.com.br
+@password = test_123
+
+# Registra um novo usuário no sistema
+POST {{host}}/{{path}}
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
