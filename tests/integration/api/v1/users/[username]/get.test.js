@@ -1,4 +1,3 @@
-import user from "models/user.js";
 import orchestrator from "tests/integration/orchestrator.js";
 
 describe("GET /api/v1/user/[username]", () => {
@@ -10,20 +9,16 @@ describe("GET /api/v1/user/[username]", () => {
 
   describe("Anonymous user", () => {
     test("With exact case match", async () => {
-      await user.create({
-        username: "ExactMatch",
-        email: "exact_match@email.com",
-        password: "senha123",
-      });
+      const user = await orchestrator.createUser();
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/ExactMatch",
+        `http://localhost:3000/api/v1/users/${user.username}`,
       );
       const responseBody = await response.json();
       expect(response.status).toBe(200);
       expect(responseBody).toEqual({
-        username: "ExactMatch",
-        email: "exact_match@email.com",
+        username: user.username,
+        email: user.email,
         password: responseBody.password,
         id: responseBody.id,
         created_at: responseBody.created_at,
@@ -32,10 +27,8 @@ describe("GET /api/v1/user/[username]", () => {
     });
 
     test("With case mismatch", async () => {
-      await user.create({
+      const user = await orchestrator.createUser({
         username: "CaseMismatch",
-        email: "case_mismatch@email.com",
-        password: "senha123",
       });
 
       const response = await fetch(
@@ -45,7 +38,7 @@ describe("GET /api/v1/user/[username]", () => {
       expect(response.status).toBe(200);
       expect(responseBody).toEqual({
         username: "CaseMismatch",
-        email: "case_mismatch@email.com",
+        email: user.email,
         password: responseBody.password,
         id: responseBody.id,
         created_at: responseBody.created_at,
