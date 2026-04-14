@@ -34,7 +34,7 @@ async function runPendingMigrations() {
 }
 
 async function clearUserTable() {
-  await database.query('truncate table users')
+  await database.query("truncate table users");
 }
 
 const orchestrator = {

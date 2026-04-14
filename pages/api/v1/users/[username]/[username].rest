@@ -3,3 +3,14 @@
 
 # Obtém os dados de um usuário
 GET {{host}}/{{path}}
+
+
+###
+
+# Atualização de senha
+PATCH {{host}}/{{path}}
+Content-Type: application/json
+
+{
+    "password": "teste123"
+}

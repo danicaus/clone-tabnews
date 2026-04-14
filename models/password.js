@@ -1,22 +1,22 @@
 import bcryptjs from "bcryptjs";
 
 async function hash(password) {
-    const rounds = getNumberOfRounds();
-    return await bcryptjs.hash(password, rounds)
+  const rounds = getNumberOfRounds();
+  return await bcryptjs.hash(password, rounds);
 }
 
 async function compare(providedPassword, storedPassword) {
-    return await bcryptjs.compare(providedPassword, storedPassword)
+  return await bcryptjs.compare(providedPassword, storedPassword);
 }
 
 function getNumberOfRounds() {
-    // Número de rounds em test deve ser 1, pra acelerar os testes
-    return process.env.NODE_ENV === 'production' ? 14 : 1
+  // Número de rounds em test deve ser 1, pra acelerar os testes
+  return process.env.NODE_ENV === "production" ? 14 : 1;
 }
 
 const password = {
-    hash,
-    compare
-}
+  hash,
+  compare,
+};
 
-export default password
+export default password;
