@@ -33,10 +33,15 @@ async function runPendingMigrations() {
   await migrator.runPendingMigrations();
 }
 
+async function clearUserTable() {
+  await database.query("truncate table users");
+}
+
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
   runPendingMigrations,
+  clearUserTable,
 };
 
 export default orchestrator;

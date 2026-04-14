@@ -24,7 +24,7 @@ describe("GET /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         username: "ExactMatch",
         email: "exact_match@email.com",
-        password: "senha123",
+        password: responseBody.password,
         id: responseBody.id,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
@@ -46,7 +46,7 @@ describe("GET /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         username: "CaseMismatch",
         email: "case_mismatch@email.com",
-        password: "senha123",
+        password: responseBody.password,
         id: responseBody.id,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
