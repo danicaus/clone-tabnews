@@ -4,6 +4,7 @@ import { faker } from "@faker-js/faker";
 import database from "infra/database.js";
 import migrator from "models/migrator.js";
 import user from "models/user.js";
+import session from "models/session";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -40,6 +41,10 @@ async function clearUserTable() {
   await database.query("truncate table users");
 }
 
+async function clearSessionTable() {
+  await database.query("truncate table sessions");
+}
+
 async function createUser(userObject) {
   return await user.create({
     username:
@@ -49,12 +54,18 @@ async function createUser(userObject) {
   });
 }
 
+async function createSession(userId) {
+  return await session.create(userId);
+}
+
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
   runPendingMigrations,
   clearUserTable,
   createUser,
+  clearSessionTable,
+  createSession,
 };
 
 export default orchestrator;
