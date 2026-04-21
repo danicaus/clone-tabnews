@@ -22,7 +22,7 @@ async function getUserByEmail(email) {
   return await database.query({
     text: `
       SELECT 
-        email 
+        * 
       FROM
         users 
       WHERE 
@@ -156,10 +156,26 @@ async function update(username, userInputValues) {
   return updatedUser.rows[0];
 }
 
+async function findOneByEmail(email) {
+  const userData = await getUserByEmail(email);
+
+  const userFound = userData?.rows?.[0];
+
+  if (!userFound) {
+    throw new NotFoundError({
+      message: "O email informado não foi encontrado no sistema",
+      action: "Verifique se o email está digitado corretamente",
+    });
+  }
+
+  return userFound;
+}
+
 const user = {
   create,
   findOneByUsername,
   update,
+  findOneByEmail,
 };
 
 export default user;
