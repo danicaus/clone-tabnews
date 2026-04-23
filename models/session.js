@@ -58,6 +58,25 @@ async function renewSession(sessionId, expiresAt) {
   return results.rows[0];
 }
 
+async function invalidateSession(sessionId) {
+  const results = await database.query({
+    text: `
+      UPDATE
+        sessions
+      SET
+        expires_at = expires_at - interval '1 year',
+        updated_at = NOW()
+      WHERE
+        id = $1
+      RETURNING
+        *
+    ;`,
+    values: [sessionId],
+  });
+
+  return results.rows[0];
+}
+
 async function createToken() {
   return crypto.randomBytes(48).toString("hex");
 }
@@ -91,11 +110,16 @@ async function renew(sessionId) {
   return await renewSession(sessionId, expiresAt);
 }
 
+async function expireById(sessionId) {
+  return await invalidateSession(sessionId);
+}
+
 const session = {
   create,
   EXPIRATION_IN_MILISSECONDS,
   findOneValidByToken,
   renew,
+  expireById,
 };
 
 export default session;
