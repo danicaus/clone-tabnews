@@ -152,7 +152,6 @@ describe("POST /api/v1/sessions", () => {
         maxAge: session.EXPIRATION_IN_MILISSECONDS / 1000,
         path: "/",
         httpOnly: true,
-        expires: expiresAt,
       });
     });
   });

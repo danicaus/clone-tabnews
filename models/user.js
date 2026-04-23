@@ -48,6 +48,22 @@ async function getUserByUsername(username) {
   });
 }
 
+async function getUserById(id) {
+  return await database.query({
+    text: `
+      SELECT 
+        * 
+      FROM
+        users 
+      WHERE 
+        id = $1
+      LIMIT
+        1
+      ;`,
+    values: [id],
+  });
+}
+
 async function updateUser(userWithNewValues) {
   return await database.query({
     text: `
@@ -171,11 +187,27 @@ async function findOneByEmail(email) {
   return userFound;
 }
 
+async function findOneById(userId) {
+  const userData = await getUserById(userId);
+
+  const userFound = userData?.rows?.[0];
+
+  if (!userFound) {
+    throw new NotFoundError({
+      message: "O id informado não foi encontrado no sistema",
+      action: "Verifique se o id está digitado corretamente",
+    });
+  }
+
+  return userFound;
+}
+
 const user = {
   create,
   findOneByUsername,
   update,
   findOneByEmail,
+  findOneById,
 };
 
 export default user;
