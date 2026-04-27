@@ -6,3 +6,9 @@ services:
     ports:
       - 5431:5432
     container_name: "postgres-test"
+  mailcatcher:
+    container_name: "mailcatcher-test"
+    image: "sj26/mailcatcher"
+    ports:
+      - "1024:1025"
+      - "1060:1080"
