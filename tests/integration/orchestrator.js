@@ -6,8 +6,11 @@ import migrator from "models/migrator.js";
 import user from "models/user.js";
 import session from "models/session";
 
+const EMAIL_HTTP_URL = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
+
 async function waitForAllServices() {
   await waitForWebServer();
+  await waitForEmailServer();
 
   async function waitForWebServer() {
     return retry(fetchStatusPage, {
@@ -22,6 +25,25 @@ async function waitForAllServices() {
 
     async function fetchStatusPage() {
       const response = await fetch("http://localhost:3000/api/v1/status");
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+    }
+  }
+
+  async function waitForEmailServer() {
+    return retry(fetchEmailPage, {
+      retries: 100,
+      maxTimeout: 5000,
+      onRetry: (error, attempt) => {
+        console.log(
+          `Attempt ${attempt} = Failed to fetch status page: ${error.message}`,
+        );
+      },
+    });
+
+    async function fetchEmailPage() {
+      const response = await fetch(EMAIL_HTTP_URL);
       if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);
       }
@@ -58,6 +80,28 @@ async function createSession(userId) {
   return await session.create(userId);
 }
 
+async function deleteAllEmails() {
+  await fetch(`${EMAIL_HTTP_URL}/messages`, {
+    method: "DELETE",
+  });
+}
+
+async function getLastEmail() {
+  const emailListResponse = await fetch(`${EMAIL_HTTP_URL}/messages`);
+  const emailListBody = await emailListResponse.json();
+  const lastEmailItem = emailListBody.pop();
+
+  const emailTextResponse = await fetch(
+    `${EMAIL_HTTP_URL}/messages/${lastEmailItem.id}.plain`,
+  );
+  const emailTextBody = await emailTextResponse.text();
+
+  return {
+    ...lastEmailItem,
+    text: emailTextBody.trim(),
+  };
+}
+
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
@@ -66,6 +110,8 @@ const orchestrator = {
   createUser,
   clearSessionTable,
   createSession,
+  deleteAllEmails,
+  getLastEmail,
 };
 
 export default orchestrator;
