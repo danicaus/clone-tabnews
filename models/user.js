@@ -2,17 +2,17 @@ import database from "infra/database";
 import { NotFoundError, ValidationError } from "infra/errors";
 import password from "./password";
 
-async function saveNewUser({ username, email, password }) {
+async function saveNewUser({ username, email, password, features }) {
   const results = await database.query({
     text: `
     INSERT INTO 
-      users (username,email,password) 
+      users (username,email,password,features) 
     VALUES 
-      ($1, $2, $3)
+      ($1, $2, $3, $4)
     RETURNING 
       *
     ;`,
-    values: [username, email, password],
+    values: [username, email, password, features],
   });
 
   return results.rows[0];
@@ -115,12 +115,17 @@ async function hashPasswordInObject(userInputValues) {
   userInputValues.password = hashedPassword;
 }
 
+function injectDefaultFeatures(userInputValues) {
+  userInputValues.features = ["read:activation_token"];
+}
+
 async function create(userInputValues) {
   const { email, username } = userInputValues;
 
   await validateUniqueUsername(username);
   await validateUniqueEmail(email);
   await hashPasswordInObject(userInputValues);
+  injectDefaultFeatures(userInputValues);
 
   const newUser = await saveNewUser(userInputValues);
   return newUser;
