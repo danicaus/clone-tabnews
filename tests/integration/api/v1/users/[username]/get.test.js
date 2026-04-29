@@ -19,6 +19,7 @@ describe("GET /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         username: user.username,
         email: user.email,
+        features: [],
         password: responseBody.password,
         id: responseBody.id,
         created_at: responseBody.created_at,
@@ -39,6 +40,7 @@ describe("GET /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         username: "CaseMismatch",
         email: user.email,
+        features: [],
         password: responseBody.password,
         id: responseBody.id,
         created_at: responseBody.created_at,
