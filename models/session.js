@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import database from "infra/database";
 import { UnauthorizedError } from "infra/errors";
 
-const EXPIRATION_IN_MILISSECONDS = 60 * 60 * 24 * 30 * 1000; // 30 Days
+const SESSION_EXPIRATION_IN_MILISSECONDS = 60 * 60 * 24 * 30 * 1000; // 30 Days
 
 async function runInsertQuery(token, userId, expiresAt) {
   const results = await database.query({
@@ -82,7 +82,7 @@ async function createToken() {
 }
 
 async function calculateExpirationDate() {
-  return new Date(Date.now() + EXPIRATION_IN_MILISSECONDS);
+  return new Date(Date.now() + SESSION_EXPIRATION_IN_MILISSECONDS);
 }
 
 async function create(userId) {
@@ -116,7 +116,7 @@ async function expireById(sessionId) {
 
 const session = {
   create,
-  EXPIRATION_IN_MILISSECONDS,
+  EXPIRATION_IN_MILISSECONDS: SESSION_EXPIRATION_IN_MILISSECONDS,
   findOneValidByToken,
   renew,
   expireById,
