@@ -6,6 +6,7 @@ import {
   ValidationError,
   NotFoundError,
   UnauthorizedError,
+ForbiddenError,
 } from "infra/errors";
 import session from "models/session";
 
@@ -15,7 +16,11 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
-  if (error instanceof ValidationError || error instanceof NotFoundError) {
+  if (
+error instanceof ValidationError ||
+error instanceof NotFoundError ||
+    error instanceof ForbiddenError
+) {
     return response.status(error.statusCode).json(error);
   }
 
