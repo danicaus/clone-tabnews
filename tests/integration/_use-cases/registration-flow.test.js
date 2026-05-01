@@ -1,9 +1,10 @@
 import activation from "models/activation";
 import orchestrator from "../orchestrator";
 import webServer from "infra/webserver";
+import user from "models/user";
 
 describe("Use case: Registration Flow (all successful)", () => {
-  let createUserResponseBody, createUserResponse;
+  let createUserResponseBody, createUserResponse, activationTokenId;
 
   beforeAll(async () => {
     await orchestrator.waitForAllServices();
@@ -42,25 +43,43 @@ describe("Use case: Registration Flow (all successful)", () => {
 
   test("Receive activation email", async () => {
     const lastEmail = await orchestrator.getLastEmail();
-    
+
     expect(lastEmail.sender).toBe("<contato@nerdtab.com.br>");
     expect(lastEmail.recipients[0]).toBe("<registration.flow@nerdtab.com.br>");
     expect(lastEmail.subject).toBe("Ative seu cadastro no NerdTab!");
     expect(lastEmail.text).toContain("RegistrationFlow");
-    
-    const activationTokenId = orchestrator.extractUUID(lastEmail.text);
-    
+
+    activationTokenId = orchestrator.extractUUID(lastEmail.text);
+
     expect(lastEmail.text).toContain(
       `${webServer.origin}/registration/activate/${activationTokenId}`,
     );
-    
-    const validToken = await activation.findValidToken(activationTokenId);
-    
-    expect(validToken.user_id).toBe(createUserResponseBody.id);
-    expect(validToken.used_at).toBe(null);
+
+    const validActivationToken =
+      await activation.findValidToken(activationTokenId);
+
+    expect(validActivationToken.user_id).toBe(createUserResponseBody.id);
+    expect(validActivationToken.used_at).toBe(null);
   });
 
-  test("Activate account", async () => {});
+  test("Activate account", async () => {
+    const activateAccountResponse = await fetch(
+      `http://localhost:3000/api/v1/activations/${activationTokenId}`,
+      {
+        method: "PATCH",
+      },
+    );
+
+    expect(activateAccountResponse.status).toBe(200);
+
+    const activationResponseBody = await activateAccountResponse.json();
+
+    expect(Date.parse(activationResponseBody.used_at)).not.toBeNaN();
+
+    const activatedUser = await user.findOneByUsername("RegistrationFlow");
+    expect(activatedUser.features).toContain("create:session");
+    expect(activatedUser.features).not.toContain("read:activation_token");
+  });
 
   test("Login", async () => {});
 

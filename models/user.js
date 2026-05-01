@@ -88,6 +88,25 @@ async function updateUser(userWithNewValues) {
   });
 }
 
+async function updateFeatures(userId, features) {
+  const results = await database.query({
+    text: `
+      UPDATE
+        users
+      SET
+        features = $2,
+        updated_at = timezone('utc', now())
+      WHERE
+        id = $1
+      RETURNING
+        *
+    ;`,
+    values: [userId, features],
+  });
+
+  return results.rows[0];
+}
+
 async function validateUniqueEmail(email) {
   const usersWithEmail = await getUserByEmail(email);
 
@@ -207,12 +226,20 @@ async function findOneById(userId) {
   return userFound;
 }
 
+async function setFeatures(userId, features) {
+  await findOneById(userId);
+
+  const activatedUser = await updateFeatures(userId, features);
+  return activatedUser;
+}
+
 const user = {
   create,
   findOneByUsername,
   update,
   findOneByEmail,
   findOneById,
+  setFeatures,
 };
 
 export default user;
