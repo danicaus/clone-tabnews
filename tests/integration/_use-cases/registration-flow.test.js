@@ -1,5 +1,6 @@
 import activation from "models/activation";
 import orchestrator from "../orchestrator";
+import webServer from "infra/webserver";
 
 describe("Use case: Registration Flow (all successful)", () => {
   let createUserResponseBody, createUserResponse;
@@ -40,16 +41,23 @@ describe("Use case: Registration Flow (all successful)", () => {
   });
 
   test("Receive activation email", async () => {
-    const activationToken = await activation.findOneByUserId(
-      createUserResponseBody.id,
-    );
-
     const lastEmail = await orchestrator.getLastEmail();
+    
     expect(lastEmail.sender).toBe("<contato@nerdtab.com.br>");
     expect(lastEmail.recipients[0]).toBe("<registration.flow@nerdtab.com.br>");
     expect(lastEmail.subject).toBe("Ative seu cadastro no NerdTab!");
     expect(lastEmail.text).toContain("RegistrationFlow");
-    expect(lastEmail.text).toContain(activationToken.id);
+    
+    const activationTokenId = orchestrator.extractUUID(lastEmail.text);
+    
+    expect(lastEmail.text).toContain(
+      `${webServer.origin}/registration/activate/${activationTokenId}`,
+    );
+    
+    const validToken = await activation.findValidToken(activationTokenId);
+    
+    expect(validToken.user_id).toBe(createUserResponseBody.id);
+    expect(validToken.used_at).toBe(null);
   });
 
   test("Activate account", async () => {});

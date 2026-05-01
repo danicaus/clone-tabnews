@@ -1,5 +1,6 @@
 import database from "infra/database";
 import email from "infra/email";
+import { NotFoundError } from "infra/errors";
 import webServer from "infra/webserver";
 
 const TOKEN_EXPIRATION_IN_MILISSECONDS = 60 * 15 * 1000; // 15 minutos
@@ -20,7 +21,7 @@ async function insertNewToken(userId, expiresAt) {
   return results.rows[0];
 }
 
-async function selectTokenByUserId(userId) {
+async function findOneValidById(userId) {
   const results = await database.query({
     text: `
       SELECT
@@ -28,7 +29,9 @@ async function selectTokenByUserId(userId) {
       FROM
         user_activation_tokens
       WHERE
-        user_id = $1
+        id = $1  
+        AND expires_at > NOW()
+        AND used_at IS NULL
       LIMIT
         1
     ;`,
@@ -49,7 +52,7 @@ async function sendEmailToUser(user, activationToken) {
     subject: "Ative seu cadastro no NerdTab!",
     text: `${user.username}, clique no link abaixo para ativar seu cadastro no NerdTab:
 
-${webServer.origin}/cadastro/ativar/${activationToken.id}
+${webServer.origin}/registration/activate/${activationToken.id}
         
 Atenciosamente,
 Equipe NerdTab`,
@@ -62,15 +65,24 @@ async function create(userId) {
   return newToken;
 }
 
-async function findOneByUserId(userId) {
-  const token = await selectTokenByUserId(userId);
-  return token;
+async function findValidToken(token) {
+  const validToken = await findOneValidById(token);
+
+  if (!validToken) {
+    throw new NotFoundError({
+      message:
+        "O token de ativação utilizado não foi encontrado no sistema ou expirou.",
+      action: "Faça um novo cadastro.",
+    });
+  }
+
+  return validToken;
 }
 
 const activation = {
   sendEmailToUser,
   create,
-  findOneByUserId,
+  findValidToken,
 };
 
 export default activation;
