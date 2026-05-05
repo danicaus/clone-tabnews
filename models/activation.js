@@ -99,10 +99,14 @@ async function findValidToken(token) {
   return validToken;
 }
 
-async function activate(token) {
+async function activateUserByUserId(userId) {
+  return await user.setFeatures(userId, ["create:session", "read:session"]);
+}
+
+async function activateToken(token) {
   const validActivationToken = await findValidToken(token);
   const validatedToken = await updateTokenToUsed(validActivationToken.id);
-  await user.setFeatures(validatedToken.user_id, ["create:session"]);
+  await activateUserByUserId(validatedToken.user_id);
 
   return validatedToken;
 }
@@ -111,7 +115,8 @@ const activation = {
   sendEmailToUser,
   create,
   findValidToken,
-  activate,
+  activateToken,
+  activateUserByUserId,
 };
 
 export default activation;

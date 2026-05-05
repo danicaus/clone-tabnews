@@ -132,7 +132,7 @@ describe("POST /api/v1/sessions", () => {
         password: "correct-password",
       });
 
-      await orchestrator.setFeaturesToUserId(user.id, ["create:session"]);
+      await orchestrator.activateUser(user);
 
       const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "POST",

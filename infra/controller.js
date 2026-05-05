@@ -21,6 +21,7 @@ async function injectAnthenticatedUser(request) {
   request.context = {
     ...request.context,
     user: userObject,
+    session: sessionObject,
   };
 }
 
