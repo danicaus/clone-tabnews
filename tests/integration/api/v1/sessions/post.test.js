@@ -97,11 +97,42 @@ describe("POST /api/v1/sessions", () => {
       });
     });
 
+    test("With correct `email` and `password`, but without permission to create session", async () => {
+      await orchestrator.createUser({
+        email: "correctUser@email.com",
+        password: "correct-password",
+      });
+
+      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "correctUser@email.com",
+          password: "correct-password",
+        }),
+      });
+
+      expect(response.status).toBe(403);
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        name: "ForbiddenError",
+        message: "Você não possui permissão para fazer login.",
+        action: "Contate o suporte caso você acredite que isso seja um erro",
+        status_code: 403,
+      });
+    });
+
     test("With correct `email` and `password`", async () => {
       const user = await orchestrator.createUser({
         email: "correctUser@email.com",
         password: "correct-password",
       });
+
+      await orchestrator.setFeaturesToUserId(user.id, ["create:session"]);
 
       const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "POST",

@@ -68,12 +68,20 @@ async function clearSessionTable() {
 }
 
 async function createUser(userObject) {
-  return await user.create({
+  const newUser = await user.create({
     username:
       userObject?.username || faker.internet.username().replace(/[_.-]/g, ""),
     email: userObject?.email || faker.internet.email(),
     password: userObject?.password || "validPassword",
   });
+
+  return newUser;
+}
+
+async function setFeaturesToUserId(userId, features) {
+  const userWithFeatures = await user.setFeatures(userId, features);
+
+  return userWithFeatures;
 }
 
 async function createSession(userId) {
@@ -122,6 +130,7 @@ const orchestrator = {
   deleteAllEmails,
   getLastEmail,
   extractUUID,
+  setFeaturesToUserId,
 };
 
 export default orchestrator;

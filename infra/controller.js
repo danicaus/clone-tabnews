@@ -8,8 +8,9 @@ import {
   UnauthorizedError,
   ForbiddenError,
 } from "infra/errors";
-import session from "models/session";
-import user from "models/user";
+import authorization from "models/authorization.js";
+import session from "models/session.js";
+import user from "models/user.js";
 
 async function injectAnthenticatedUser(request) {
   const sessionToken = request.cookies.session_id;
@@ -99,7 +100,7 @@ function canRequest(feature) {
   return function canRequestMiddleware(request, response, next) {
     const userTryingToRequest = request.context.user;
 
-    if (userTryingToRequest.features.includes(feature)) {
+    if (authorization.can(userTryingToRequest, feature)) {
       return next();
     }
 
