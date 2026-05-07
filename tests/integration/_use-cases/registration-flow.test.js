@@ -14,7 +14,9 @@ describe("Use case: Registration Flow (all successful)", () => {
     await orchestrator.clearDatabase();
     await orchestrator.runPendingMigrations();
     await orchestrator.deleteAllEmails();
+  });
 
+  test("Create user account", async () => {
     createUserResponse = await fetch("http://localhost:3000/api/v1/users", {
       method: "POST",
       headers: {
@@ -28,9 +30,7 @@ describe("Use case: Registration Flow (all successful)", () => {
     });
 
     createUserResponseBody = await createUserResponse.json();
-  });
 
-  test("Create user account", async () => {
     expect(createUserResponse.status).toBe(201);
 
     expect(createUserResponseBody).toEqual({
