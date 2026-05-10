@@ -171,7 +171,7 @@ describe("PATCH /api/v1/activations/[activation_id]", () => {
   describe("Default user", () => {
     test("With used token", async () => {
       const user = await orchestrator.createUser();
-      const sessionObject = await orchestrator.createSession(user.id);
+      const sessionObject = await orchestrator.createSession(user);
       const token = await orchestrator.createActivationToken(user);
 
       await orchestrator.activateToken(token.id);
@@ -207,7 +207,7 @@ describe("PATCH /api/v1/activations/[activation_id]", () => {
 
       jest.useRealTimers();
 
-      const sessionObject = await orchestrator.createSession(user.id);
+      const sessionObject = await orchestrator.createSession(user);
       const response = await fetch(
         `http://localhost:3000/api/v1/activations/${token.id}`,
         {
@@ -234,9 +234,8 @@ describe("PATCH /api/v1/activations/[activation_id]", () => {
     test("With valid token, but already logged user", async () => {
       const loggedUser = await orchestrator.createUser();
       await orchestrator.activateUser(loggedUser);
-      const loggedUserSessionObject = await orchestrator.createSession(
-        loggedUser.id,
-      );
+      const loggedUserSessionObject =
+        await orchestrator.createSession(loggedUser);
 
       const newUser = await orchestrator.createUser();
       const newUserActivationToken =
@@ -266,7 +265,7 @@ describe("PATCH /api/v1/activations/[activation_id]", () => {
 
     test("With valid token", async () => {
       const user = await orchestrator.createUser();
-      const sessionObject = await orchestrator.createSession(user.id);
+      const sessionObject = await orchestrator.createSession(user);
       const token = await orchestrator.createActivationToken(user);
 
       const response = await fetch(

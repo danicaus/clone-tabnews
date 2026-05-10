@@ -138,7 +138,7 @@ describe("POST /api/v1/users", () => {
     test("With unique and valid data", async () => {
       const loggedUser = await orchestrator.createUser();
       await orchestrator.activateUser(loggedUser);
-      const sessionObject = await orchestrator.createSession(loggedUser.id);
+      const sessionObject = await orchestrator.createSession(loggedUser);
 
       const response = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
