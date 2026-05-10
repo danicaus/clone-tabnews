@@ -79,8 +79,8 @@ async function createUser(userObject) {
   return newUser;
 }
 
-async function setUserFeatures(userId, features) {
-  return await user.setFeatures(userId, features);
+async function addFeaturesToUser(userObject, features) {
+  return await user.addFeatures(userObject.id, features);
 }
 
 async function activateUser(user) {
@@ -144,7 +144,7 @@ const orchestrator = {
   activateUser,
   createActivationToken,
   activateToken,
-  setUserFeatures,
+  addFeaturesToUser,
 };
 
 export default orchestrator;

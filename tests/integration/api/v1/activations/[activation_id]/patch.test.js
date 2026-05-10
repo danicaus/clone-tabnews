@@ -95,7 +95,7 @@ describe("PATCH /api/v1/activations/[activation_id]", () => {
 
     test("Without read:activation_token permission", async () => {
       const user = await orchestrator.createUser();
-      await orchestrator.setUserFeatures(user.id, ["read:session"]);
+      await orchestrator.activateUser(user);
       const token = await orchestrator.createActivationToken(user);
 
       const response = await fetch(

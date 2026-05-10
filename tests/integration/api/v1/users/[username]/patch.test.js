@@ -1,3 +1,5 @@
+import { version as uuidVersion } from "uuid";
+
 import orchestrator from "tests/integration/orchestrator.js";
 import password from "models/password.js";
 
@@ -325,14 +327,12 @@ describe("PATCH /api/v1/user/[username]", () => {
   });
 
   describe("Provileged user", () => {
-    test.only("With `update:users:others` targeting `defaultUser`", async () => {
+    test("With `update:users:others` targeting `defaultUser`", async () => {
       const privilegedUser = await orchestrator.createUser();
       const userObject = await orchestrator.activateUser(privilegedUser);
       const privilegedUserSession =
         await orchestrator.createSession(privilegedUser);
-      const teste = await orchestrator.addFeaturesToUser(userObject, [
-        "update:user:others",
-      ]);
+      await orchestrator.addFeaturesToUser(userObject, ["update:user:others"]);
 
       const defaultUser = await orchestrator.createUser();
 
@@ -345,7 +345,7 @@ describe("PATCH /api/v1/user/[username]", () => {
             Cookie: `session_id=${privilegedUserSession.token}`,
           },
           body: JSON.stringify({
-            username: "otherUsername",
+            username: "updatedByPrivilegedUser",
           }),
         },
       );
@@ -354,7 +354,21 @@ describe("PATCH /api/v1/user/[username]", () => {
 
       const responseBody = await response.json();
 
-      expect(responseBody).toEqual({});
+      expect(responseBody).toEqual({
+        id: defaultUser.id,
+        username: "updatedByPrivilegedUser",
+        email: defaultUser.email,
+        features: defaultUser.features,
+        password: responseBody.password,
+        created_at: responseBody.created_at,
+        updated_at: responseBody.updated_at,
+      });
+
+      expect(uuidVersion(responseBody.id)).toBe(4);
+      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
+      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
+
+      expect(responseBody.updated_at > responseBody.created_at).toBe(true);
     });
   });
 });
