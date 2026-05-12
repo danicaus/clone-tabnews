@@ -2,6 +2,7 @@ import { createRouter } from "next-connect";
 
 import controller from "infra/controller";
 import session from "models/session.js";
+import authorization from "models/authorization";
 
 const router = createRouter();
 router.use(controller.injectAnonymousOrUser);
@@ -20,5 +21,11 @@ async function getHandler(request, response) {
     "no-store, no-cache, max-age=0, must-revalidate",
   );
 
-  return response.status(200).json(userAuthenticated);
+  const secureOutputValues = authorization.filterOutput(
+    userAuthenticated,
+    "read:user:self",
+    userAuthenticated,
+  );
+
+  return response.status(200).json(secureOutputValues);
 }

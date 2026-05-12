@@ -60,6 +60,35 @@ async function runPendingMigrations() {
   await migrator.runPendingMigrations();
 }
 
+async function runFirstMigrations() {
+  await migrator.runNumberMigrations(3);
+}
+
+async function deleteLastMigration() {
+  await database.query({
+    text: `
+      DELETE 
+      FROM
+        pgmigrations
+      WHERE
+        id = (SELECT MAX(id) FROM pgmigrations);
+      ;`,
+  });
+}
+
+async function getMigrations() {
+  const results = await database.query({
+    text: `
+      SELECT 
+        * 
+      FROM
+        pgmigrations
+      ;`,
+  });
+
+  return results.rows;
+}
+
 async function clearUserTable() {
   await database.query("truncate table users");
 }
@@ -134,6 +163,9 @@ const orchestrator = {
   waitForAllServices,
   clearDatabase,
   runPendingMigrations,
+  runFirstMigrations,
+  deleteLastMigration,
+  getMigrations,
   clearUserTable,
   createUser,
   clearSessionTable,

@@ -242,7 +242,7 @@ describe("PATCH /api/v1/activations/[activation_id]", () => {
         await orchestrator.createActivationToken(newUser);
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/activations/${newUserActivationToken}`,
+        `http://localhost:3000/api/v1/activations/${newUserActivationToken.id}`,
         {
           method: "PATCH",
           headers: {
