@@ -4,6 +4,7 @@ import { ForbiddenError, NotFoundError } from "infra/errors";
 import webServer from "infra/webserver";
 import user from "./user";
 import authorization from "./authorization";
+import featureProfiles from "./featureProfiles";
 
 const TOKEN_EXPIRATION_IN_MILISSECONDS = 60 * 15 * 1000; // 15 minutos
 
@@ -110,11 +111,7 @@ async function activateUserByUserId(userId) {
     });
   }
 
-  return await user.setFeatures(userId, [
-    "create:session",
-    "read:session",
-    "update:user",
-  ]);
+  return await user.setFeatures(userId, featureProfiles.activatedUser);
 }
 
 async function activateToken(token) {
