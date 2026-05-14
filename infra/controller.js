@@ -11,7 +11,7 @@ import {
 import authorization from "models/authorization.js";
 import session from "models/session.js";
 import user from "models/user.js";
-import featureProfiles from "models/featureProfiles.js";
+import features from "models/feature.js";
 
 async function injectAnthenticatedUser(request) {
   const sessionToken = request.cookies.session_id;
@@ -28,7 +28,7 @@ async function injectAnthenticatedUser(request) {
 
 function injectAnonymousUser(request) {
   const anonymousUserObject = {
-    features: featureProfiles.anonymousUser,
+    features: features.profiles.anonymousUser,
   };
 
   request.context = {

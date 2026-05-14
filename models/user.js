@@ -1,7 +1,7 @@
 import database from "infra/database";
 import { NotFoundError, ValidationError } from "infra/errors";
 import password from "./password";
-import featureProfiles from "./featureProfiles";
+import features from "./feature";
 
 async function saveNewUser({ username, email, password, features }) {
   const results = await database.query({
@@ -155,7 +155,7 @@ async function hashPasswordInObject(userInputValues) {
 }
 
 function injectDefaultFeatures(userInputValues) {
-  userInputValues.features = featureProfiles.newUser;
+  userInputValues.features = features.profiles.newUser;
 }
 
 async function create(userInputValues) {
