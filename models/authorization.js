@@ -1,4 +1,9 @@
+import { InternalServerError } from "infra/errors";
+import { default as featureModel } from "./feature";
+
 function can(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
   let authorized = false;
 
   if (user.features.includes(feature)) {
@@ -13,6 +18,9 @@ function can(user, feature, resource) {
 }
 
 function filterOutput(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
+  validateResource(resource);
   const filterDataForReturn = {
     readUser: "read:user",
     readUserSelf: "read:user:self",
@@ -49,6 +57,31 @@ function filterOutput(user, feature, resource) {
 
   if (statusPageResource) {
     return filterStatuspageReturn(user, feature, resource);
+  }
+}
+
+function validateUser(user) {
+  if (!user || !user.features) {
+    throw new InternalServerError({
+      cause: "É necessário fornecer `user` no model `authorization`.",
+    });
+  }
+}
+
+function validateFeature(feature) {
+  if (!feature || !featureModel.availableFeatures.includes(feature)) {
+    throw new InternalServerError({
+      cause:
+        "É necessário fornecer uma `feature` conhecida no model `authorization`.",
+    });
+  }
+}
+
+function validateResource(resource) {
+  if (!resource) {
+    throw new InternalServerError({
+      cause: "É necessário fornecer um `resource` no model `authorization`.",
+    });
   }
 }
 
