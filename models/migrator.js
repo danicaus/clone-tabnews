@@ -35,9 +35,34 @@ async function runPendingMigrations() {
   return await migrationsHandler(false);
 }
 
+async function runNumberMigrations(quantity) {
+  const dbClient = await database.getNewClient();
+
+  const defaultMigrationConfig = {
+    dbClient: dbClient,
+    dir: resolve("infra", "migrations"),
+    direction: "up",
+    log: () => {},
+    migrationsTable: "pgmigrations",
+    count: quantity,
+  };
+
+  try {
+    return await migrationRunner(defaultMigrationConfig);
+  } catch (error) {
+    throw new ServiceError({
+      message: "Erro na conexão com o Banco de Dados ou Migration",
+      cause: error,
+    });
+  } finally {
+    await dbClient.end();
+  }
+}
+
 const migrator = {
   listPendingMigrations,
   runPendingMigrations,
+  runNumberMigrations,
 };
 
 export default migrator;

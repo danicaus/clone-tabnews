@@ -23,7 +23,9 @@ describe("GET /api/v1/user", () => {
         username: "UserWithValidSession",
       });
 
-      const sessionObject = await orchestrator.createSession(createdUser.id);
+      const activatedUser = await orchestrator.activateUser(createdUser);
+
+      const sessionObject = await orchestrator.createSession(createdUser);
 
       const response = await fetch(`http://localhost:3000/api/v1/user`, {
         headers: {
@@ -39,9 +41,9 @@ describe("GET /api/v1/user", () => {
         id: createdUser.id,
         username: "UserWithValidSession",
         email: createdUser.email,
-        password: createdUser.password,
+        features: ["create:session", "read:session", "update:user"],
         created_at: createdUser.created_at.toISOString(),
-        updated_at: createdUser.updated_at.toISOString(),
+        updated_at: activatedUser.updated_at.toISOString(),
       });
 
       // Renovação de sessão - dados salvos no banco
@@ -85,7 +87,9 @@ describe("GET /api/v1/user", () => {
         username: "UserWithValid30DaysOldSession",
       });
 
-      const sessionObject = await orchestrator.createSession(createdUser.id);
+      const activatedUser = await orchestrator.activateUser(createdUser);
+
+      const sessionObject = await orchestrator.createSession(createdUser);
 
       jest.useRealTimers();
 
@@ -103,9 +107,9 @@ describe("GET /api/v1/user", () => {
         id: createdUser.id,
         username: "UserWithValid30DaysOldSession",
         email: createdUser.email,
-        password: createdUser.password,
+        features: ["create:session", "read:session", "update:user"],
         created_at: createdUser.created_at.toISOString(),
-        updated_at: createdUser.updated_at.toISOString(),
+        updated_at: activatedUser.updated_at.toISOString(),
       });
 
       const renewedSession = await session.findOneValidByToken(
@@ -144,7 +148,9 @@ describe("GET /api/v1/user", () => {
         username: "UserWithValid15DaysOldSession",
       });
 
-      const sessionObject = await orchestrator.createSession(createdUser.id);
+      const activatedUser = await orchestrator.activateUser(createdUser);
+
+      const sessionObject = await orchestrator.createSession(createdUser);
 
       jest.useRealTimers();
 
@@ -162,9 +168,9 @@ describe("GET /api/v1/user", () => {
         id: createdUser.id,
         username: "UserWithValid15DaysOldSession",
         email: createdUser.email,
-        password: createdUser.password,
+        features: ["create:session", "read:session", "update:user"],
         created_at: createdUser.created_at.toISOString(),
-        updated_at: createdUser.updated_at.toISOString(),
+        updated_at: activatedUser.updated_at.toISOString(),
       });
 
       const renewedSession = await session.findOneValidByToken(
@@ -233,7 +239,7 @@ describe("GET /api/v1/user", () => {
         username: "UserWithExpiredSession",
       });
 
-      const sessionObject = await orchestrator.createSession(createdUser.id);
+      const sessionObject = await orchestrator.createSession(createdUser);
 
       jest.useRealTimers();
 
@@ -264,6 +270,23 @@ describe("GET /api/v1/user", () => {
         maxAge: -1,
         path: "/",
         httpOnly: true,
+      });
+    });
+  });
+
+  describe("Anonymous user", () => {
+    test("Retrieving the endpoint", async () => {
+      const response = await fetch(`http://localhost:3000/api/v1/user`);
+
+      expect(response.status).toBe(403);
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        name: "ForbiddenError",
+        message: "Você não possui permissão para executar esta ação",
+        action: `Verifique se o seu usuário possui a feature "read:session"`,
+        status_code: 403,
       });
     });
   });

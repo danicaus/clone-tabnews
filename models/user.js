@@ -1,18 +1,19 @@
 import database from "infra/database";
 import { NotFoundError, ValidationError } from "infra/errors";
 import password from "./password";
+import features from "./feature";
 
-async function saveNewUser({ username, email, password }) {
+async function saveNewUser({ username, email, password, features }) {
   const results = await database.query({
     text: `
     INSERT INTO 
-      users (username,email,password) 
+      users (username,email,password,features) 
     VALUES 
-      ($1, $2, $3)
+      ($1, $2, $3, $4)
     RETURNING 
       *
     ;`,
-    values: [username, email, password],
+    values: [username, email, password, features],
   });
 
   return results.rows[0];
@@ -88,6 +89,44 @@ async function updateUser(userWithNewValues) {
   });
 }
 
+async function updateFeatures(userId, features) {
+  const results = await database.query({
+    text: `
+      UPDATE
+        users
+      SET
+        features = $2,
+        updated_at = timezone('utc', now())
+      WHERE
+        id = $1
+      RETURNING
+        *
+    ;`,
+    values: [userId, features],
+  });
+
+  return results.rows[0];
+}
+
+async function addFeaturesQuery(userId, features) {
+  const results = await database.query({
+    text: `
+      UPDATE
+        users
+      SET
+        features = array_cat(features, $2),
+        updated_at = timezone('utc', now())
+      WHERE
+        id = $1
+      RETURNING
+        *
+    ;`,
+    values: [userId, features],
+  });
+
+  return results.rows[0];
+}
+
 async function validateUniqueEmail(email) {
   const usersWithEmail = await getUserByEmail(email);
 
@@ -115,12 +154,17 @@ async function hashPasswordInObject(userInputValues) {
   userInputValues.password = hashedPassword;
 }
 
+function injectDefaultFeatures(userInputValues) {
+  userInputValues.features = features.profiles.newUser;
+}
+
 async function create(userInputValues) {
   const { email, username } = userInputValues;
 
   await validateUniqueUsername(username);
   await validateUniqueEmail(email);
   await hashPasswordInObject(userInputValues);
+  injectDefaultFeatures(userInputValues);
 
   const newUser = await saveNewUser(userInputValues);
   return newUser;
@@ -202,12 +246,28 @@ async function findOneById(userId) {
   return userFound;
 }
 
+async function setFeatures(userId, features) {
+  await findOneById(userId);
+
+  const activatedUser = await updateFeatures(userId, features);
+  return activatedUser;
+}
+
+async function addFeatures(userId, features) {
+  await findOneById(userId);
+
+  const activatedUser = await addFeaturesQuery(userId, features);
+  return activatedUser;
+}
+
 const user = {
   create,
   findOneByUsername,
   update,
   findOneByEmail,
   findOneById,
+  setFeatures,
+  addFeatures,
 };
 
 export default user;

@@ -1,6 +1,6 @@
 @path = api/v1/users
-@username = test_user
-@email = test_user@test.com.br
+@username = test
+@email = test@test.com.br
 @password = test_123
 
 # Registra um novo usuário no sistema

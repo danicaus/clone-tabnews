@@ -1,0 +1,17 @@
+@path = api/v1/sessions
+@email = test_user@test.com.br
+@password = test_123
+
+# Cria uma nova sessão (login)
+POST {{host}}/{{path}}
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+
+###
+# Expira a sessão atual (logout)
+DELETE {{host}}/{{path}}

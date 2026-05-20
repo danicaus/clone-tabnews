@@ -5,6 +5,7 @@ import database from "infra/database.js";
 import migrator from "models/migrator.js";
 import user from "models/user.js";
 import session from "models/session";
+import activation from "models/activation";
 
 const EMAIL_HTTP_URL = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
 
@@ -59,6 +60,35 @@ async function runPendingMigrations() {
   await migrator.runPendingMigrations();
 }
 
+async function runFirstMigrations() {
+  await migrator.runNumberMigrations(3);
+}
+
+async function deleteLastMigration() {
+  await database.query({
+    text: `
+      DELETE 
+      FROM
+        pgmigrations
+      WHERE
+        id = (SELECT MAX(id) FROM pgmigrations);
+      ;`,
+  });
+}
+
+async function getMigrations() {
+  const results = await database.query({
+    text: `
+      SELECT 
+        * 
+      FROM
+        pgmigrations
+      ;`,
+  });
+
+  return results.rows;
+}
+
 async function clearUserTable() {
   await database.query("truncate table users");
 }
@@ -68,16 +98,34 @@ async function clearSessionTable() {
 }
 
 async function createUser(userObject) {
-  return await user.create({
+  const newUser = await user.create({
     username:
       userObject?.username || faker.internet.username().replace(/[_.-]/g, ""),
     email: userObject?.email || faker.internet.email(),
     password: userObject?.password || "validPassword",
   });
+
+  return newUser;
 }
 
-async function createSession(userId) {
-  return await session.create(userId);
+async function addFeaturesToUser(userObject, features) {
+  return await user.addFeatures(userObject.id, features);
+}
+
+async function activateUser(user) {
+  return await activation.activateUserByUserId(user.id);
+}
+
+async function createActivationToken(user) {
+  return await activation.create(user.id);
+}
+
+async function activateToken(token) {
+  return await activation.activateToken(token);
+}
+
+async function createSession(user) {
+  return await session.create(user.id);
 }
 
 async function deleteAllEmails() {
@@ -91,6 +139,10 @@ async function getLastEmail() {
   const emailListBody = await emailListResponse.json();
   const lastEmailItem = emailListBody.pop();
 
+  if (!lastEmailItem) {
+    return null;
+  }
+
   const emailTextResponse = await fetch(
     `${EMAIL_HTTP_URL}/messages/${lastEmailItem.id}.plain`,
   );
@@ -102,16 +154,29 @@ async function getLastEmail() {
   };
 }
 
+function extractUUID(text) {
+  const match = text.match(/[0-9a-fA-F-]{36}/);
+  return match ? match[0] : null;
+}
+
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
   runPendingMigrations,
+  runFirstMigrations,
+  deleteLastMigration,
+  getMigrations,
   clearUserTable,
   createUser,
   clearSessionTable,
   createSession,
   deleteAllEmails,
   getLastEmail,
+  extractUUID,
+  activateUser,
+  createActivationToken,
+  activateToken,
+  addFeaturesToUser,
 };
 
 export default orchestrator;

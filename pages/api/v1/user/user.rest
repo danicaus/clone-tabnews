@@ -1,0 +1,4 @@
+@path = api/v1/user
+
+# Obtém os dados do usuário autenticado e renova a sessão
+GET {{host}}/{{path}}
