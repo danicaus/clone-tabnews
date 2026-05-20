@@ -24,7 +24,7 @@ describe("Use case: Registration Flow (all successful)", () => {
       },
       body: JSON.stringify({
         username: "RegistrationFlow",
-        email: "registration.flow@nerdtab.com.br",
+        email: "registration.flow@alerts.tabnerd.com.br",
         password: "RegistrationFlowPassword",
       }),
     });
@@ -45,9 +45,11 @@ describe("Use case: Registration Flow (all successful)", () => {
   test("Receive activation email", async () => {
     const lastEmail = await orchestrator.getLastEmail();
 
-    expect(lastEmail.sender).toBe("<contato@nerdtab.com.br>");
-    expect(lastEmail.recipients[0]).toBe("<registration.flow@nerdtab.com.br>");
-    expect(lastEmail.subject).toBe("Ative seu cadastro no NerdTab!");
+    expect(lastEmail.sender).toBe("<contato@alerts.tabnerd.com.br>");
+    expect(lastEmail.recipients[0]).toBe(
+      "<registration.flow@alerts.tabnerd.com.br>",
+    );
+    expect(lastEmail.subject).toBe("Ative seu cadastro no TabNerd!");
     expect(lastEmail.text).toContain("RegistrationFlow");
 
     activationTokenId = orchestrator.extractUUID(lastEmail.text);
@@ -94,7 +96,7 @@ describe("Use case: Registration Flow (all successful)", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: "registration.flow@nerdtab.com.br",
+          email: "registration.flow@alerts.tabnerd.com.br",
           password: "RegistrationFlowPassword",
         }),
       },

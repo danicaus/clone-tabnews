@@ -69,15 +69,15 @@ function calculateExpirationDate() {
 
 async function sendEmailToUser(user, activationToken) {
   await email.send({
-    from: "NerdTab <contato@nerdtab.com.br>",
+    from: "TabNerd <contato@alerts.tabnerd.com.br>",
     to: user.email,
-    subject: "Ative seu cadastro no NerdTab!",
-    text: `${user.username}, clique no link abaixo para ativar seu cadastro no NerdTab:
+    subject: "Ative seu cadastro no TabNerd!",
+    text: `${user.username}, clique no link abaixo para ativar seu cadastro no TabNerd:
 
 ${webServer.origin}/registration/activate/${activationToken.id}
         
 Atenciosamente,
-Equipe NerdTab`,
+Equipe TabNerd`,
   });
 }
 
