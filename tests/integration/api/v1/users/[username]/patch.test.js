@@ -129,6 +129,10 @@ describe("PATCH /api/v1/user/[username]", () => {
         });
 
         expect(response.status).toBe(200);
+
+        const responseBody = await response.json();
+
+        expect(responseBody.username).toBe("USER");
       });
     });
 
@@ -267,6 +271,10 @@ describe("PATCH /api/v1/user/[username]", () => {
         updated_at: responseBody.updated_at,
       });
       expect(responseBody.updated_at > responseBody.created_at).toBe(true);
+
+      const userInDatabase = await user.findOneByUsername(createdUser.username);
+
+      expect(userInDatabase.email).toBe("unique_email@email.com");
     });
 
     test("With new `password`", async () => {
