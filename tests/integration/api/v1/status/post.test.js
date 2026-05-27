@@ -1,3 +1,4 @@
+import webServer from "infra/webserver";
 import orchestrator from "tests/integration/orchestrator.js";
 
 describe("POST /api/v1/status", () => {
@@ -9,7 +10,7 @@ describe("POST /api/v1/status", () => {
     });
 
     beforeEach(async () => {
-      response = await fetch("http://localhost:3000/api/v1/status", {
+      response = await fetch(`${webServer.origin}/api/v1/status`, {
         method: "POST",
       });
     });

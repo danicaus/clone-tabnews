@@ -2,6 +2,7 @@ import { version as uuidVersion } from "uuid";
 import orchestrator from "tests/integration/orchestrator.js";
 import session from "models/session.js";
 import setCookieParser from "set-cookie-parser";
+import webServer from "infra/webserver";
 
 describe("POST /api/v1/sessions", () => {
   beforeAll(async () => {
@@ -20,7 +21,7 @@ describe("POST /api/v1/sessions", () => {
         password: "senha-correta",
       });
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webServer.origin}/api/v1/sessions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +49,7 @@ describe("POST /api/v1/sessions", () => {
         email: "email.correto@email.com",
       });
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webServer.origin}/api/v1/sessions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,7 +75,7 @@ describe("POST /api/v1/sessions", () => {
     test("With incorrect `email` and incorrect `password`", async () => {
       await orchestrator.createUser();
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webServer.origin}/api/v1/sessions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +104,7 @@ describe("POST /api/v1/sessions", () => {
         password: "correct-password",
       });
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webServer.origin}/api/v1/sessions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -134,7 +135,7 @@ describe("POST /api/v1/sessions", () => {
 
       await orchestrator.activateUser(user);
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webServer.origin}/api/v1/sessions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

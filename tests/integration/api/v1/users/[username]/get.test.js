@@ -1,3 +1,4 @@
+import webServer from "infra/webserver";
 import orchestrator from "tests/integration/orchestrator.js";
 
 describe("GET /api/v1/user/[username]", () => {
@@ -13,9 +14,7 @@ describe("GET /api/v1/user/[username]", () => {
         username: "SameCase",
       });
 
-      const response = await fetch(
-        `http://localhost:3000/api/v1/users/SameCase`,
-      );
+      const response = await fetch(`${webServer.origin}/api/v1/users/SameCase`);
       const responseBody = await response.json();
       expect(response.status).toBe(200);
       expect(responseBody).toEqual({
@@ -33,7 +32,7 @@ describe("GET /api/v1/user/[username]", () => {
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/casemismatch",
+        `${webServer.origin}/api/v1/users/casemismatch`,
       );
       const responseBody = await response.json();
       expect(response.status).toBe(200);
@@ -48,7 +47,7 @@ describe("GET /api/v1/user/[username]", () => {
 
     test("With nonexistent `username`", async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/nonexistent",
+        `${webServer.origin}/api/v1/users/nonexistent`,
       );
       expect(response.status).toBe(404);
       const responseBody = await response.json();
@@ -67,7 +66,7 @@ describe("GET /api/v1/user/[username]", () => {
       const userSession = await orchestrator.createSession(createdUser);
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${createdUser.username}`,
+        `${webServer.origin}/api/v1/users/${createdUser.username}`,
         {
           headers: {
             Cookie: `session_id=${userSession.token}`,
@@ -94,7 +93,7 @@ describe("GET /api/v1/user/[username]", () => {
       const anotherUser = await orchestrator.createUser();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${anotherUser.username}`,
+        `${webServer.origin}/api/v1/users/${anotherUser.username}`,
         {
           headers: {
             Cookie: `session_id=${userSession.token}`,
