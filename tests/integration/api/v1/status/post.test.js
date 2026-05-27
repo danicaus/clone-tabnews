@@ -7,6 +7,8 @@ describe("POST /api/v1/status", () => {
 
     beforeAll(async () => {
       await orchestrator.waitForAllServices();
+      await orchestrator.clearDatabase();
+      await orchestrator.runPendingMigrations();
     });
 
     beforeEach(async () => {
