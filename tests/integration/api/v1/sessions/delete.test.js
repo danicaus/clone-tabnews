@@ -6,12 +6,6 @@ import session from "models/session.js";
 import webServer from "infra/webserver";
 
 describe("DELETE /api/v1/sessions", () => {
-  beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-    await orchestrator.clearDatabase();
-    await orchestrator.runPendingMigrations();
-  });
-
   beforeEach(async () => {
     await orchestrator.clearUserTable();
     await orchestrator.clearSessionTable();

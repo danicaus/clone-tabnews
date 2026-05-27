@@ -7,12 +7,6 @@ import webServer from "infra/webserver";
 const ONE_DAY_IN_MILISSECONDS = 60 * 60 * 24 * 1000;
 
 describe("GET /api/v1/user", () => {
-  beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-    await orchestrator.clearDatabase();
-    await orchestrator.runPendingMigrations();
-  });
-
   beforeEach(async () => {
     await orchestrator.clearUserTable();
     await orchestrator.clearSessionTable();

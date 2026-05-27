@@ -1,15 +1,8 @@
 import webServer from "infra/webserver";
-import orchestrator from "tests/integration/orchestrator.js";
 
 describe("POST /api/v1/status", () => {
   describe("Anonymous user", () => {
     let response;
-
-    beforeAll(async () => {
-      await orchestrator.waitForAllServices();
-      await orchestrator.clearDatabase();
-      await orchestrator.runPendingMigrations();
-    });
 
     beforeEach(async () => {
       response = await fetch(`${webServer.origin}/api/v1/status`, {

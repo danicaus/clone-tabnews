@@ -7,9 +7,6 @@ import webServer from "infra/webserver";
 
 describe("PATCH /api/v1/activations/[activation_id]", () => {
   beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-    await orchestrator.clearDatabase();
-    await orchestrator.runPendingMigrations();
     await orchestrator.deleteAllEmails();
   });
 

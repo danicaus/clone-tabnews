@@ -6,12 +6,6 @@ import user from "models/user";
 import webServer from "infra/webserver";
 
 describe("PATCH /api/v1/user/[username]", () => {
-  beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-    await orchestrator.clearDatabase();
-    await orchestrator.runPendingMigrations();
-  });
-
   describe("Anonymous user", () => {
     test("With unique `username`", async () => {
       const user = await orchestrator.createUser();

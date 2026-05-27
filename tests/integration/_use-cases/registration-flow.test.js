@@ -10,9 +10,6 @@ describe("Use case: Registration Flow (all successful)", () => {
     createSessionResponseBody;
 
   beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-    await orchestrator.clearDatabase();
-    await orchestrator.runPendingMigrations();
     await orchestrator.deleteAllEmails();
   });
 

@@ -2,11 +2,6 @@ import webServer from "infra/webserver";
 import orchestrator from "tests/integration/orchestrator.js";
 
 describe("GET /api/v1/status", () => {
-  beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-    await orchestrator.clearDatabase();
-    await orchestrator.runPendingMigrations();
-  });
   describe("Anonymous user", () => {
     test("Retrieving current system status", async () => {
       const response = await fetch(`${webServer.origin}/api/v1/status`);

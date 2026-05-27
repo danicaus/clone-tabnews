@@ -5,12 +5,6 @@ import setCookieParser from "set-cookie-parser";
 import webServer from "infra/webserver";
 
 describe("POST /api/v1/sessions", () => {
-  beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-    await orchestrator.clearDatabase();
-    await orchestrator.runPendingMigrations();
-  });
-
   beforeEach(async () => {
     await orchestrator.clearUserTable();
   });

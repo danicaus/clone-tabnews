@@ -2,12 +2,6 @@ import webServer from "infra/webserver";
 import orchestrator from "tests/integration/orchestrator.js";
 
 describe("GET /api/v1/migrations", () => {
-  beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-    await orchestrator.clearDatabase();
-    await orchestrator.runFirstMigrations();
-  });
-
   describe("Anonymous user", () => {
     test("Getting pending migrations", async () => {
       const response = await fetch(`${webServer.origin}/api/v1/migrations`);

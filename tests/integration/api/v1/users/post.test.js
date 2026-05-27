@@ -5,12 +5,6 @@ import password from "models/password.js";
 import webServer from "infra/webserver";
 
 describe("POST /api/v1/users", () => {
-  beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-    await orchestrator.clearDatabase();
-    await orchestrator.runPendingMigrations();
-  });
-
   describe("Anonymous user", () => {
     test("With unique and valid data", async () => {
       const userName = "danicaus";
