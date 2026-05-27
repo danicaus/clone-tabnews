@@ -46,7 +46,7 @@ describe("GET /api/v1/user/[username]", () => {
       });
     });
 
-    test("With nonexistent username", async () => {
+    test("With nonexistent `username`", async () => {
       const response = await fetch(
         "http://localhost:3000/api/v1/users/nonexistent",
       );
@@ -62,7 +62,7 @@ describe("GET /api/v1/user/[username]", () => {
   });
 
   describe("Default user", () => {
-    test("Consulting their own user", async () => {
+    test("Consulting their own `username`", async () => {
       const createdUser = await orchestrator.createUser();
       const userSession = await orchestrator.createSession(createdUser);
 
@@ -88,7 +88,7 @@ describe("GET /api/v1/user/[username]", () => {
       });
     });
 
-    test("Consulting another user", async () => {
+    test("Consulting another `username`", async () => {
       const createdUser = await orchestrator.createUser();
       const userSession = await orchestrator.createSession(createdUser);
       const anotherUser = await orchestrator.createUser();

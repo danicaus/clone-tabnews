@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import orchestrator from "tests/integration/orchestrator.js";
 
 describe("POST /api/v1/status", () => {
