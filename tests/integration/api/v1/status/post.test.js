@@ -1,18 +1,11 @@
-/**
- * @jest-environment node
- */
-import orchestrator from "tests/integration/orchestrator.js";
+import webServer from "infra/webserver";
 
 describe("POST /api/v1/status", () => {
   describe("Anonymous user", () => {
     let response;
 
-    beforeAll(async () => {
-      await orchestrator.waitForAllServices();
-    });
-
     beforeEach(async () => {
-      response = await fetch("http://localhost:3000/api/v1/status", {
+      response = await fetch(`${webServer.origin}/api/v1/status`, {
         method: "POST",
       });
     });

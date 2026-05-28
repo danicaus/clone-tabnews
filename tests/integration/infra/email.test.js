@@ -2,9 +2,6 @@ import email from "infra/email.js";
 import orchestrator from "../orchestrator";
 
 describe("infra/email.js", () => {
-  beforeAll(async () => {
-    await orchestrator.waitForAllServices();
-  });
   beforeEach(async () => {
     await orchestrator.deleteAllEmails();
   });
