@@ -60,6 +60,7 @@ describe("GET /api/v1/user", () => {
         maxAge: session.EXPIRATION_IN_MILISSECONDS / 1000,
         path: "/",
         httpOnly: true,
+        sameSite: "Lax",
       });
 
       //Renovação de sessão - dados de cache
@@ -127,6 +128,7 @@ describe("GET /api/v1/user", () => {
         maxAge: session.EXPIRATION_IN_MILISSECONDS / 1000,
         path: "/",
         httpOnly: true,
+        sameSite: "Lax",
       });
     });
 
@@ -188,6 +190,7 @@ describe("GET /api/v1/user", () => {
         maxAge: session.EXPIRATION_IN_MILISSECONDS / 1000,
         path: "/",
         httpOnly: true,
+        sameSite: "Lax",
       });
     });
 
