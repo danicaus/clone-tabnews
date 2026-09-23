@@ -5,15 +5,17 @@ export default function DefaultLayout({ children, metadata = {} }) {
   return (
     <>
       <Head>
-        <title>{metadata.title ? `${metadata.title} · NerdTab` : 'NerdTab'}</title>
-        {metadata.description && (
-          <meta name="description" value={metadata.description}/>
+        <title>
+          {metadata?.title ? `${metadata.title} · TabNerd` : "TabNerd"}
+        </title>
+        {metadata?.description && (
+          <meta name="description" content={metadata?.description} />
         )}
       </Head>
       <PageLayout.Header>
         <Header>
           <Header.Item full>
-            <Header.Link href="/"> NerdTab </Header.Link>
+            <Header.Link href="/"> TabNerd </Header.Link>
           </Header.Item>
           <Header.Item>
             <Header.Link href="/login">Login</Header.Link>
@@ -28,11 +30,9 @@ export default function DefaultLayout({ children, metadata = {} }) {
           {children}
         </PageLayout.Content>
         <PageLayout.Footer divider={"line"}>
-          <Text size="small">
-            © {new Date().getFullYear()} NerdTab
-          </Text>
+          <Text size="small">© {new Date().getFullYear()} TabNerd</Text>
         </PageLayout.Footer>
       </PageLayout>
     </>
-  )
+  );
 }
