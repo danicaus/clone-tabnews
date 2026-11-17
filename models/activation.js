@@ -93,7 +93,7 @@ async function sendEmailToUser(user, activationToken) {
     subject: "Ative seu cadastro no TabNerd!",
     text: `${user.username}, clique no link abaixo para ativar seu cadastro no TabNerd:
 
-${webServer.origin}/registration/activate/${activationToken.id}
+${webServer.origin}/cadastro/ativar/${activationToken.id}
         
 Atenciosamente,
 Equipe TabNerd`,
