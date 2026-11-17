@@ -44,6 +44,25 @@ async function findOneValidById(userId) {
   return results.rows[0];
 }
 
+async function findOneUsedById(userId) {
+  const results = await database.query({
+    text: `
+      SELECT
+        *
+      FROM
+        user_activation_tokens
+      WHERE
+        id = $1  
+        AND used_at IS NOT NULL
+      LIMIT
+        1
+    ;`,
+    values: [userId],
+  });
+
+  return results.rows[0];
+}
+
 async function updateTokenToUsed(token) {
   const results = await database.query({
     text: `
@@ -101,6 +120,16 @@ async function findValidToken(token) {
   return validToken;
 }
 
+async function findUsedToken(token) {
+  const usedToken = await findOneUsedById(token);
+
+  if (!usedToken) {
+    return null;
+  }
+
+  return usedToken;
+}
+
 async function activateUserByUserId(userId) {
   const userToActivate = await user.findOneById(userId);
 
@@ -126,6 +155,7 @@ const activation = {
   sendEmailToUser,
   create,
   findValidToken,
+  findUsedToken,
   activateToken,
   activateUserByUserId,
   TOKEN_EXPIRATION_IN_MILISSECONDS,

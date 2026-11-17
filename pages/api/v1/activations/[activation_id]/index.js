@@ -9,10 +9,23 @@ export default createRouter()
   .handler(controller.errorHandlers);
 
 async function patchHandler(request, response) {
+  let usedToken;
   const activationTokenId = request.query.activation_id;
   const userTryingToPatch = request.context.user;
-  const usedToken = await activation.activateToken(activationTokenId);
 
+  usedToken = await activation.findUsedToken(activationTokenId);
+
+  if (usedToken) {
+    const secureOutputValues = authorization.filterOutput(
+      userTryingToPatch,
+      "read:activation_token",
+      usedToken,
+    );
+
+    return response.status(200).json(secureOutputValues);
+  }
+
+  usedToken = await activation.activateToken(activationTokenId);
   const secureOutputValues = authorization.filterOutput(
     userTryingToPatch,
     "read:activation_token",
